@@ -34,7 +34,7 @@ function textToBytes(text: string): Uint8Array {
 async function getKey(): Promise<CryptoKey> {
   return crypto.subtle.importKey(
     "raw",
-    textToBytes(SECRET),
+    textToBytes(SECRET) as BufferSource,
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign", "verify"]
@@ -43,14 +43,19 @@ async function getKey(): Promise<CryptoKey> {
 
 async function sign(data: string): Promise<string> {
   const key = await getKey();
-  const signature = await crypto.subtle.sign("HMAC", key, textToBytes(data));
+  const signature = await crypto.subtle.sign("HMAC", key, textToBytes(data) as BufferSource);
   return toBase64Url(new Uint8Array(signature));
 }
 
 async function verify(data: string, signature: string): Promise<boolean> {
   try {
     const key = await getKey();
-    return await crypto.subtle.verify("HMAC", key, fromBase64Url(signature), textToBytes(data));
+    return await crypto.subtle.verify(
+      "HMAC",
+      key,
+      fromBase64Url(signature) as BufferSource,
+      textToBytes(data) as BufferSource
+    );
   } catch {
     return false;
   }
