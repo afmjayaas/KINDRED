@@ -1,0 +1,26 @@
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "KINDRED | Modern Women's Fashion Boutique",
+  description:
+    "KINDRED is a premium women's fashion boutique offering elegant dresses, festive sets, and modern essentials. Shop new arrivals, featured pieces, and timeless designs.",
+  keywords: ["KINDRED", "women's dresses", "fashion boutique", "festive wear", "evening gowns"],
+  openGraph: {
+    title: "KINDRED | Modern Women's Fashion Boutique",
+    description: "Elegant, considered dresses for women who dress with intention.",
+    images: ["/images/brand/cover.png"],
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className="font-sans antialiased bg-cream">{children}</body>
+    </html>
+  );
+}

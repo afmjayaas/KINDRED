@@ -1,0 +1,78 @@
+[
+  {
+    "id": "o1",
+    "orderNumber": "KIN-2026-1042",
+    "customerName": "Ananya Rao",
+    "phone": "9876543210",
+    "email": "ananya.rao@example.com",
+    "status": "Shipped",
+    "items": [
+      { "productName": "Noir Lace Bloom Dress", "size": "M", "color": "Black", "quantity": 1, "price": 6900 }
+    ],
+    "total": 6900,
+    "placedAt": "2026-06-08T09:30:00.000Z",
+    "updatedAt": "2026-06-13T14:00:00.000Z",
+    "statusHistory": [
+      { "status": "Pending", "date": "2026-06-08T09:30:00.000Z" },
+      { "status": "Confirmed", "date": "2026-06-08T15:00:00.000Z" },
+      { "status": "Processing", "date": "2026-06-10T11:00:00.000Z" },
+      { "status": "Shipped", "date": "2026-06-13T14:00:00.000Z" }
+    ]
+  },
+  {
+    "id": "o2",
+    "orderNumber": "KIN-2026-1078",
+    "customerName": "Meera Iyer",
+    "phone": "9123456780",
+    "email": "meera.iyer@example.com",
+    "status": "Pending",
+    "items": [
+      { "productName": "Amethyst Zarine Set", "size": "L", "color": "Purple", "quantity": 1, "price": 11500 }
+    ],
+    "total": 11500,
+    "placedAt": "2026-06-15T12:10:00.000Z",
+    "updatedAt": "2026-06-15T12:10:00.000Z",
+    "statusHistory": [
+      { "status": "Pending", "date": "2026-06-15T12:10:00.000Z" }
+    ]
+  },
+  {
+    "id": "o3",
+    "orderNumber": "KIN-2026-0991",
+    "customerName": "Priya Nair",
+    "phone": "9988776655",
+    "email": "priya.nair@example.com",
+    "status": "Delivered",
+    "items": [
+      { "productName": "Ivory Meadow Tiered Maxi", "size": "S", "color": "Ivory", "quantity": 1, "price": 7800 }
+    ],
+    "total": 7800,
+    "placedAt": "2026-05-28T08:00:00.000Z",
+    "updatedAt": "2026-06-03T10:00:00.000Z",
+    "statusHistory": [
+      { "status": "Pending", "date": "2026-05-28T08:00:00.000Z" },
+      { "status": "Confirmed", "date": "2026-05-28T13:00:00.000Z" },
+      { "status": "Processing", "date": "2026-05-30T09:00:00.000Z" },
+      { "status": "Shipped", "date": "2026-06-01T09:00:00.000Z" },
+      { "status": "Delivered", "date": "2026-06-03T10:00:00.000Z" }
+    ]
+  },
+  {
+    "id": "o4",
+    "orderNumber": "KIN-2026-1005",
+    "customerName": "Divya Menon",
+    "phone": "9001122334",
+    "email": "divya.menon@example.com",
+    "status": "Cancelled",
+    "items": [
+      { "productName": "Rosalind Anarkali Set", "size": "M", "color": "Maroon", "quantity": 1, "price": 11900 }
+    ],
+    "total": 11900,
+    "placedAt": "2026-06-01T10:00:00.000Z",
+    "updatedAt": "2026-06-02T16:00:00.000Z",
+    "statusHistory": [
+      { "status": "Pending", "date": "2026-06-01T10:00:00.000Z" },
+      { "status": "Cancelled", "date": "2026-06-02T16:00:00.000Z" }
+    ]
+  }
+]

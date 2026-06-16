@@ -1,0 +1,22 @@
+[
+  {
+    "id": "b1",
+    "title": "The Festive Edit",
+    "subtitle": "Up to 25% off select evening and festive wear",
+    "image": "/images/dresses/dress4.png",
+    "ctaText": "Shop the Edit",
+    "ctaLink": "/shop?category=Festive+Wear",
+    "active": true,
+    "order": 1
+  },
+  {
+    "id": "b2",
+    "title": "New Arrivals Are Here",
+    "subtitle": "Discover the latest additions to the KINDRED wardrobe",
+    "image": "/images/dresses/dress5.png",
+    "ctaText": "Shop New Arrivals",
+    "ctaLink": "/shop?newArrival=true",
+    "active": true,
+    "order": 2
+  }
+]
