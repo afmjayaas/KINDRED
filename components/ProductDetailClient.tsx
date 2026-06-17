@@ -209,6 +209,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 <p className="text-lg font-semibold text-brand-orange mb-4">{successOrder}</p>
                 <p className="text-sm text-brand-brown/70 mb-6">
                   Save this number — you can check your order status anytime on the Track My Order page.
+                  {form.email
+                    ? " A confirmation email is on its way to your inbox."
+                    : " Our team will reach out to you by phone shortly."}
                 </p>
                 <Link href="/track-order" className="btn-primary">
                   Track My Order

@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Product, JournalPost, Banner, Order } from "./types";
+import { Product, JournalPost, Banner, Order, SiteSettings } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
@@ -79,4 +79,12 @@ export function getOrderByNumberAndContact(
       norm(o.orderNumber) === norm(orderNumber) &&
       (norm(o.phone) === norm(contact) || norm(o.email) === norm(contact))
   );
+}
+
+// ---------- Site Settings ----------
+export function getSettings(): SiteSettings {
+  return readJson<SiteSettings>("settings.json", {});
+}
+export function saveSettings(settings: SiteSettings): void {
+  writeJson("settings.json", settings);
 }

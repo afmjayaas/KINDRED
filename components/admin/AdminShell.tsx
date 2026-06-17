@@ -9,6 +9,7 @@ import {
   Newspaper,
   Image as ImageIcon,
   PackageSearch,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/admin/journal", label: "Journal Posts", icon: Newspaper },
   { href: "/admin/banners", label: "Promo Banners", icon: ImageIcon },
   { href: "/admin/orders", label: "Orders", icon: PackageSearch },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

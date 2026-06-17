@@ -3,6 +3,7 @@ import { getOrders, saveOrders } from "@/lib/db";
 import { isAdminAuthenticated } from "@/lib/server-auth";
 import { generateOrderNumber } from "@/lib/utils";
 import { Order } from "@/lib/types";
+import { sendOrderEmails } from "@/lib/email";
 import crypto from "crypto";
 
 export async function GET() {
@@ -50,6 +51,15 @@ export async function POST(req: NextRequest) {
     };
     orders.unshift(newOrder);
     saveOrders(orders);
+
+    // Fire off notification emails (admin + customer). Never let an email
+    // failure break order creation for the customer.
+    try {
+      await sendOrderEmails(newOrder);
+    } catch (err) {
+      console.error("[orders] Email notification failed:", err);
+    }
+
     return NextResponse.json({ order: newOrder }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Failed to submit order inquiry." }, { status: 500 });

@@ -81,6 +81,13 @@ export interface Order {
   statusHistory: { status: OrderStatus; date: string }[];
 }
 
+export interface MailSettings {
+  gmailUser: string;
+  gmailAppPassword: string;
+  adminNotifyEmail: string;
+}
+
 export interface SiteSettings {
   adminUsernameHint?: string;
+  mail?: MailSettings;
 }
