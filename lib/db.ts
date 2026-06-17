@@ -20,11 +20,25 @@ import { Product, JournalPost, Banner, Order, SiteSettings } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
+// Different ways Upstash/Vercel can name these env vars depending on how the
+// database was provisioned (Vercel Marketplace "Upstash" integration namespaces
+// them as UPSTASH_REDIS_REST_KV_REST_API_*, a standalone Upstash account uses
+// the plain UPSTASH_REDIS_REST_*, and the older Vercel KV integration uses
+// KV_REST_API_*). Check all of them so this works regardless of setup path.
+const redisUrl =
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_URL ||
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.KV_REST_API_URL;
+const redisToken =
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.KV_REST_API_TOKEN;
+
 const redis =
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  redisUrl && redisToken
     ? new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+        url: redisUrl,
+        token: redisToken,
       })
     : null;
 
