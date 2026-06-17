@@ -42,10 +42,10 @@ export default function Footer() {
         <div>
           <h4 className="eyebrow text-brand-orange mb-4">Stay Connected</h4>
           <div className="flex items-center gap-2 text-sm text-cream-deep mb-2">
-            <Mail size={16} /> <span>hello@kindred.style</span>
+            <Mail size={16} /> <span>info@kindred.com</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-cream-deep mb-4">
-            <Phone size={16} /> <span>+91 98765 43210</span>
+            <Phone size={16} /> <span>+94 772051527</span>
           </div>
           <div className="flex gap-3">
             <a href="#" aria-label="Instagram" className="p-2 rounded-full border border-cream-deep/40 hover:bg-brand-orange hover:border-brand-orange transition-colors">

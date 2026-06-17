@@ -130,13 +130,13 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-8 mb-10 text-brand-brown/80">
             <div className="flex items-center justify-center gap-2">
-              <Mail size={18} className="text-brand-orange" /> hello@kindred.style
+              <Mail size={18} className="text-brand-orange" /> info@kindred.com
             </div>
             <div className="flex items-center justify-center gap-2">
-              <Phone size={18} className="text-brand-orange" /> +91 98765 43210
+              <Phone size={18} className="text-brand-orange" /> +94 77 2051527
             </div>
             <div className="flex items-center justify-center gap-2">
-              <MapPin size={18} className="text-brand-orange" /> Mumbai, India
+              <MapPin size={18} className="text-brand-orange" /> Kalmunai, Sri Lanka
             </div>
           </div>
           <Link href="/shop" className="btn-primary">
