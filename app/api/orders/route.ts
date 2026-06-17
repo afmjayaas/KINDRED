@@ -11,7 +11,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
   try {
-    const orders = getOrders().sort(
+    const orders = (await getOrders()).sort(
       (a, b) => new Date(b.placedAt).getTime() - new Date(a.placedAt).getTime()
     );
     return NextResponse.json({ orders });
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const orders = getOrders();
+    const orders = await getOrders();
     const now = new Date().toISOString();
     const total = body.items.reduce(
       (sum: number, item: any) => sum + Number(item.price || 0) * Number(item.quantity || 1),
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       statusHistory: [{ status: "Pending", date: now }],
     };
     orders.unshift(newOrder);
-    saveOrders(orders);
+    await saveOrders(orders);
 
     // Fire off notification emails (admin + customer). Never let an email
     // failure break order creation for the customer.

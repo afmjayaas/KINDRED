@@ -4,8 +4,8 @@ import { getJournalPosts } from "@/lib/db";
 import { Plus } from "lucide-react";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
 
-export default function AdminJournalPage() {
-  const posts = getJournalPosts().sort(
+export default async function AdminJournalPage() {
+  const posts = (await getJournalPosts()).sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 

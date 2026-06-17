@@ -7,7 +7,7 @@ import crypto from "crypto";
 
 export async function GET() {
   try {
-    const posts = getJournalPosts();
+    const posts = await getJournalPosts();
     return NextResponse.json({ posts });
   } catch {
     return NextResponse.json({ error: "Failed to load journal posts." }, { status: 500 });
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     if (!body.title) {
       return NextResponse.json({ error: "Title is required." }, { status: 400 });
     }
-    const posts = getJournalPosts();
+    const posts = await getJournalPosts();
     const baseSlug = slugify(body.title);
     let slug = baseSlug;
     let i = 1;
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       updatedAt: now,
     };
     posts.unshift(newPost);
-    saveJournalPosts(posts);
+    await saveJournalPosts(posts);
     return NextResponse.json({ post: newPost }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Failed to create journal post." }, { status: 500 });

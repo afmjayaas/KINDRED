@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: "Style guides, care tips, and stories from the KINDRED studio.",
 };
 
-export default function JournalPage() {
-  const posts = getJournalPosts().sort(
+export default async function JournalPage() {
+  const posts = (await getJournalPosts()).sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 

@@ -1,8 +1,8 @@
 import { getBanners } from "@/lib/db";
 import BannerManager from "@/components/admin/BannerManager";
 
-export default function AdminBannersPage() {
-  const banners = getBanners().sort((a, b) => a.order - b.order);
+export default async function AdminBannersPage() {
+  const banners = (await getBanners()).sort((a, b) => a.order - b.order);
 
   return (
     <div>

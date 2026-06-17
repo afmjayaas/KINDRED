@@ -9,7 +9,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
   try {
-    const settings = getSettings();
+    const settings = await getSettings();
     return NextResponse.json({
       mail: {
         gmailUser: settings.mail?.gmailUser || "",
@@ -30,7 +30,7 @@ export async function PUT(req: NextRequest) {
   }
   try {
     const body = await req.json();
-    const settings = getSettings();
+    const settings = await getSettings();
     const existingPassword = settings.mail?.gmailAppPassword || "";
 
     const updated = {
@@ -48,7 +48,7 @@ export async function PUT(req: NextRequest) {
       },
     };
 
-    saveSettings(updated);
+    await saveSettings(updated);
     return NextResponse.json({
       mail: {
         gmailUser: updated.mail.gmailUser,

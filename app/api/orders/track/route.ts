@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const order = getOrderByNumberAndContact(orderNumber, contact);
+    const order = await getOrderByNumberAndContact(orderNumber, contact);
     if (!order) {
       return NextResponse.json(
         { error: "We couldn't find an order matching those details. Please double-check and try again." },

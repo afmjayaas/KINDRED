@@ -8,10 +8,10 @@ import EmptyState from "@/components/EmptyState";
 import { getProducts, getJournalPosts, getBanners } from "@/lib/db";
 import Link from "next/link";
 
-export default function HomePage() {
-  const products = getProducts();
-  const journalPosts = getJournalPosts();
-  const banners = getBanners().filter((b) => b.active).sort((a, b) => a.order - b.order);
+export default async function HomePage() {
+  const products = await getProducts();
+  const journalPosts = await getJournalPosts();
+  const banners = (await getBanners()).filter((b) => b.active).sort((a, b) => a.order - b.order);
 
   const newArrivals = products.filter((p) => p.isNewArrival).slice(0, 4);
   const featured = products.filter((p) => p.isFeatured).slice(0, 4);

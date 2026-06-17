@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: "Browse the full KINDRED collection of women's dresses — evening gowns, festive sets, maxi dresses, and more.",
 };
 
-export default function ShopPage() {
-  const products = getProducts();
+export default async function ShopPage() {
+  const products = await getProducts();
 
   return (
     <div>

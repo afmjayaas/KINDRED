@@ -8,7 +8,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
   try {
     const body = await req.json();
-    const orders = getOrders();
+    const orders = await getOrders();
     const idx = orders.findIndex((o) => o.id === params.id);
     if (idx === -1) {
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
@@ -25,7 +25,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
           : existing.statusHistory,
     };
     orders[idx] = updated;
-    saveOrders(orders);
+    await saveOrders(orders);
     return NextResponse.json({ order: updated });
   } catch {
     return NextResponse.json({ error: "Failed to update order." }, { status: 500 });

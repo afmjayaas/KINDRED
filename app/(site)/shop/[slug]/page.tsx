@@ -5,8 +5,8 @@ import ProductDetailClient from "@/components/ProductDetailClient";
 import SectionHeading from "@/components/SectionHeading";
 import ProductCard from "@/components/ProductCard";
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const product = getProductBySlug(params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Product Not Found | KINDRED" };
   return {
     title: `${product.name} | KINDRED`,
@@ -15,11 +15,11 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const product = await getProductBySlug(params.slug);
   if (!product) notFound();
 
-  const related = getProducts()
+  const related = (await getProducts())
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 

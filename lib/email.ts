@@ -10,8 +10,8 @@ import { getSettings } from "@/lib/db";
 // If neither is configured, emails are silently skipped so order placement
 // never breaks for the customer.
 
-export function getMailConfig() {
-  const settings = getSettings();
+export async function getMailConfig() {
+  const settings = await getSettings();
   const gmailUser = settings.mail?.gmailUser || process.env.GMAIL_USER || "";
   const gmailAppPassword = settings.mail?.gmailAppPassword || process.env.GMAIL_APP_PASSWORD || "";
   const adminNotifyEmail =
@@ -19,13 +19,14 @@ export function getMailConfig() {
   return { gmailUser, gmailAppPassword, adminNotifyEmail };
 }
 
-function getTransporter() {
-  const { gmailUser, gmailAppPassword } = getMailConfig();
-  if (!gmailUser || !gmailAppPassword) return null;
-  return nodemailer.createTransport({
+async function getTransporter() {
+  const config = await getMailConfig();
+  if (!config.gmailUser || !config.gmailAppPassword) return { transporter: null, config };
+  const transporter = nodemailer.createTransport({
     service: "gmail",
-    auth: { user: gmailUser, pass: gmailAppPassword },
+    auth: { user: config.gmailUser, pass: config.gmailAppPassword },
   });
+  return { transporter, config };
 }
 
 function itemsHtml(order: Order) {
@@ -64,12 +65,12 @@ function wrapHtml(title: string, bodyHtml: string) {
 }
 
 export async function sendOrderEmails(order: Order): Promise<void> {
-  const transporter = getTransporter();
+  const { transporter, config } = await getTransporter();
   if (!transporter) {
     console.warn("[email] Mail not configured (Admin Portal > Settings) — skipping order emails.");
     return;
   }
-  const { gmailUser, adminNotifyEmail } = getMailConfig();
+  const { gmailUser, adminNotifyEmail } = config;
   const fromAddress = `KINDRED Boutique <${gmailUser}>`;
 
   const summaryTable = `
@@ -134,11 +135,11 @@ export async function sendOrderEmails(order: Order): Promise<void> {
 // Used by the Admin Portal Settings page's "Send Test Email" button so the
 // admin can verify their Gmail credentials work before relying on them.
 export async function sendTestEmail(): Promise<{ ok: boolean; error?: string }> {
-  const transporter = getTransporter();
+  const { transporter, config } = await getTransporter();
   if (!transporter) {
     return { ok: false, error: "Mail is not configured yet. Fill in the fields above and save first." };
   }
-  const { gmailUser, adminNotifyEmail } = getMailConfig();
+  const { gmailUser, adminNotifyEmail } = config;
   try {
     await transporter.sendMail({
       from: `KINDRED Boutique <${gmailUser}>`,

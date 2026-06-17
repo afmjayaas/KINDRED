@@ -6,8 +6,8 @@ import { getJournalPostBySlug, getJournalPosts } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
 import JournalCard from "@/components/JournalCard";
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const post = getJournalPostBySlug(params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = await getJournalPostBySlug(params.slug);
   if (!post) return { title: "Article Not Found | KINDRED" };
   return {
     title: `${post.title} | KINDRED Journal`,
@@ -16,11 +16,11 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function JournalArticlePage({ params }: { params: { slug: string } }) {
-  const post = getJournalPostBySlug(params.slug);
+export default async function JournalArticlePage({ params }: { params: { slug: string } }) {
+  const post = await getJournalPostBySlug(params.slug);
   if (!post) notFound();
 
-  const more = getJournalPosts()
+  const more = (await getJournalPosts())
     .filter((p) => p.id !== post.id)
     .slice(0, 3);
 

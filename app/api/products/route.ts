@@ -7,7 +7,7 @@ import crypto from "crypto";
 
 export async function GET() {
   try {
-    const products = getProducts();
+    const products = await getProducts();
     return NextResponse.json({ products });
   } catch {
     return NextResponse.json({ error: "Failed to load products." }, { status: 500 });
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: `Field "${field}" is required.` }, { status: 400 });
       }
     }
-    const products = getProducts();
+    const products = await getProducts();
     const baseSlug = slugify(body.name);
     let slug = baseSlug;
     let i = 1;
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       updatedAt: now,
     };
     products.unshift(newProduct);
-    saveProducts(products);
+    await saveProducts(products);
     return NextResponse.json({ product: newProduct }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: "Failed to create product." }, { status: 500 });

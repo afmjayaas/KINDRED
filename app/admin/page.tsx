@@ -2,11 +2,11 @@ import Link from "next/link";
 import { getProducts, getJournalPosts, getOrders, getBanners } from "@/lib/db";
 import { ShoppingBag, Newspaper, PackageSearch, Tag } from "lucide-react";
 
-export default function AdminDashboard() {
-  const products = getProducts();
-  const journalPosts = getJournalPosts();
-  const orders = getOrders();
-  const banners = getBanners();
+export default async function AdminDashboard() {
+  const products = await getProducts();
+  const journalPosts = await getJournalPosts();
+  const orders = await getOrders();
+  const banners = await getBanners();
 
   const stats = [
     {

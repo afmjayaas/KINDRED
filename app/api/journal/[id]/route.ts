@@ -9,7 +9,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
   try {
     const body = await req.json();
-    const posts = getJournalPosts();
+    const posts = await getJournalPosts();
     const idx = posts.findIndex((p) => p.id === params.id);
     if (idx === -1) {
       return NextResponse.json({ error: "Journal post not found." }, { status: 404 });
@@ -26,7 +26,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
     const updated = { ...existing, ...body, slug, updatedAt: new Date().toISOString() };
     posts[idx] = updated;
-    saveJournalPosts(posts);
+    await saveJournalPosts(posts);
     return NextResponse.json({ post: updated });
   } catch {
     return NextResponse.json({ error: "Failed to update journal post." }, { status: 500 });
@@ -38,12 +38,12 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
   try {
-    const posts = getJournalPosts();
+    const posts = await getJournalPosts();
     const filtered = posts.filter((p) => p.id !== params.id);
     if (filtered.length === posts.length) {
       return NextResponse.json({ error: "Journal post not found." }, { status: 404 });
     }
-    saveJournalPosts(filtered);
+    await saveJournalPosts(filtered);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete journal post." }, { status: 500 });

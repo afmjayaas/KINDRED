@@ -2,8 +2,8 @@ import { getOrders } from "@/lib/db";
 import OrderStatusSelect from "@/components/admin/OrderStatusSelect";
 import { formatDate } from "@/lib/utils";
 
-export default function AdminOrdersPage() {
-  const orders = getOrders().sort(
+export default async function AdminOrdersPage() {
+  const orders = (await getOrders()).sort(
     (a, b) => new Date(b.placedAt).getTime() - new Date(a.placedAt).getTime()
   );
 

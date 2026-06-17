@@ -6,8 +6,8 @@ interface EditProductPageProps {
   params: { id: string };
 }
 
-export default function EditProductPage({ params }: EditProductPageProps) {
-  const product = getProductById(params.id);
+export default async function EditProductPage({ params }: EditProductPageProps) {
+  const product = await getProductById(params.id);
   if (!product) notFound();
 
   return (

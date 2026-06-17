@@ -4,8 +4,8 @@ import { getProducts } from "@/lib/db";
 import { Plus } from "lucide-react";
 import DeleteProductButton from "@/components/admin/DeleteProductButton";
 
-export default function AdminProductsPage() {
-  const products = getProducts().sort(
+export default async function AdminProductsPage() {
+  const products = (await getProducts()).sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 

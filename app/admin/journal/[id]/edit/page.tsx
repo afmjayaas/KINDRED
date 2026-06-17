@@ -6,8 +6,8 @@ interface EditJournalPageProps {
   params: { id: string };
 }
 
-export default function EditJournalPage({ params }: EditJournalPageProps) {
-  const post = getJournalPosts().find((p) => p.id === params.id);
+export default async function EditJournalPage({ params }: EditJournalPageProps) {
+  const post = (await getJournalPosts()).find((p) => p.id === params.id);
   if (!post) notFound();
 
   return (

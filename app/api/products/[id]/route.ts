@@ -9,7 +9,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
   try {
     const body = await req.json();
-    const products = getProducts();
+    const products = await getProducts();
     const idx = products.findIndex((p) => p.id === params.id);
     if (idx === -1) {
       return NextResponse.json({ error: "Product not found." }, { status: 404 });
@@ -34,7 +34,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       updatedAt: new Date().toISOString(),
     };
     products[idx] = updated;
-    saveProducts(products);
+    await saveProducts(products);
     return NextResponse.json({ product: updated });
   } catch (err) {
     return NextResponse.json({ error: "Failed to update product." }, { status: 500 });
@@ -46,12 +46,12 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
   try {
-    const products = getProducts();
+    const products = await getProducts();
     const filtered = products.filter((p) => p.id !== params.id);
     if (filtered.length === products.length) {
       return NextResponse.json({ error: "Product not found." }, { status: 404 });
     }
-    saveProducts(filtered);
+    await saveProducts(filtered);
     return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json({ error: "Failed to delete product." }, { status: 500 });

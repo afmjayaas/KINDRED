@@ -6,7 +6,7 @@ import crypto from "crypto";
 
 export async function GET() {
   try {
-    const banners = getBanners();
+    const banners = await getBanners();
     return NextResponse.json({ banners });
   } catch {
     return NextResponse.json({ error: "Failed to load banners." }, { status: 500 });
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     if (!body.title) {
       return NextResponse.json({ error: "Title is required." }, { status: 400 });
     }
-    const banners = getBanners();
+    const banners = await getBanners();
     const newBanner: Banner = {
       id: crypto.randomUUID(),
       title: body.title,
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       order: banners.length + 1,
     };
     banners.push(newBanner);
-    saveBanners(banners);
+    await saveBanners(banners);
     return NextResponse.json({ banner: newBanner }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Failed to create banner." }, { status: 500 });
