@@ -12,17 +12,18 @@ import { getSettings } from "@/lib/db";
 
 export async function getMailConfig() {
   const settings = await getSettings();
-  const mail = settings.mail || {};
+  const mail = settings.mail;
 
-  const smtpHost = mail.smtpHost || process.env.SMTP_HOST || "";
-  const smtpPort = mail.smtpPort || (process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465);
-  const smtpSecure = mail.smtpSecure !== undefined ? mail.smtpSecure : (process.env.SMTP_SECURE === "false" ? false : true);
+  const smtpHost = mail?.smtpHost || process.env.SMTP_HOST || "";
+  const smtpPort = mail?.smtpPort || (process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465);
+  const smtpSecure = mail?.smtpSecure !== undefined ? mail.smtpSecure : (process.env.SMTP_SECURE === "false" ? false : true);
   
-  const user = mail.gmailUser || process.env.GMAIL_USER || process.env.SMTP_USER || "";
-  const pass = mail.gmailAppPassword || process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || "";
-  const fromName = mail.fromName || "KINDRED Boutique";
-  const fromEmail = mail.fromEmail || user || "contact@kindredboutique.com";
-  const adminNotifyEmail = mail.adminNotifyEmail || process.env.ADMIN_NOTIFY_EMAIL || "usrajlive@gmail.com";
+  const user = mail?.gmailUser || process.env.GMAIL_USER || process.env.SMTP_USER || "";
+  const pass = mail?.gmailAppPassword || process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || "";
+  const fromName = mail?.fromName || "KINDRED Boutique";
+  const fromEmail = mail?.fromEmail || user || "contact@kindredboutique.com";
+  const adminNotifyEmail = mail?.adminNotifyEmail || process.env.ADMIN_NOTIFY_EMAIL || "usrajlive@gmail.com";
+
 
   return {
     smtpHost,

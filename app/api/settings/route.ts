@@ -9,23 +9,24 @@ export async function GET() {
   }
   try {
     const settings = await getSettings();
-    const mail = settings.mail || {};
+    const mail = settings.mail;
     return NextResponse.json({
       mail: {
-        smtpHost: mail.smtpHost || "",
-        smtpPort: mail.smtpPort || 465,
-        smtpSecure: mail.smtpSecure !== undefined ? mail.smtpSecure : true,
-        fromName: mail.fromName || "KINDRED Boutique",
-        fromEmail: mail.fromEmail || mail.gmailUser || "",
-        gmailUser: mail.gmailUser || "",
-        adminNotifyEmail: mail.adminNotifyEmail || "",
-        hasAppPassword: !!mail.gmailAppPassword,
+        smtpHost: mail?.smtpHost || "",
+        smtpPort: mail?.smtpPort || 465,
+        smtpSecure: mail?.smtpSecure !== undefined ? mail.smtpSecure : true,
+        fromName: mail?.fromName || "KINDRED Boutique",
+        fromEmail: mail?.fromEmail || mail?.gmailUser || "",
+        gmailUser: mail?.gmailUser || "",
+        adminNotifyEmail: mail?.adminNotifyEmail || "",
+        hasAppPassword: !!mail?.gmailAppPassword,
       },
     });
   } catch {
     return NextResponse.json({ error: "Failed to load settings." }, { status: 500 });
   }
 }
+
 
 // PUT: updates mail & SMTP settings
 export async function PUT(req: NextRequest) {
