@@ -12,20 +12,50 @@ import { getSettings } from "@/lib/db";
 
 export async function getMailConfig() {
   const settings = await getSettings();
-  const gmailUser = settings.mail?.gmailUser || process.env.GMAIL_USER || "";
-  const gmailAppPassword = settings.mail?.gmailAppPassword || process.env.GMAIL_APP_PASSWORD || "";
-  const adminNotifyEmail =
-    settings.mail?.adminNotifyEmail || process.env.ADMIN_NOTIFY_EMAIL || "usrajlive@gmail.com";
-  return { gmailUser, gmailAppPassword, adminNotifyEmail };
+  const mail = settings.mail || {};
+
+  const smtpHost = mail.smtpHost || process.env.SMTP_HOST || "";
+  const smtpPort = mail.smtpPort || (process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465);
+  const smtpSecure = mail.smtpSecure !== undefined ? mail.smtpSecure : (process.env.SMTP_SECURE === "false" ? false : true);
+  
+  const user = mail.gmailUser || process.env.GMAIL_USER || process.env.SMTP_USER || "";
+  const pass = mail.gmailAppPassword || process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || "";
+  const fromName = mail.fromName || "KINDRED Boutique";
+  const fromEmail = mail.fromEmail || user || "contact@kindredboutique.com";
+  const adminNotifyEmail = mail.adminNotifyEmail || process.env.ADMIN_NOTIFY_EMAIL || "usrajlive@gmail.com";
+
+  return {
+    smtpHost,
+    smtpPort,
+    smtpSecure,
+    user,
+    pass,
+    fromName,
+    fromEmail,
+    adminNotifyEmail,
+  };
 }
 
 async function getTransporter() {
   const config = await getMailConfig();
-  if (!config.gmailUser || !config.gmailAppPassword) return { transporter: null, config };
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: { user: config.gmailUser, pass: config.gmailAppPassword },
-  });
+  if (!config.user || !config.pass) return { transporter: null, config };
+
+  let transporter;
+  if (config.smtpHost) {
+    transporter = nodemailer.createTransport({
+      host: config.smtpHost,
+      port: config.smtpPort,
+      secure: config.smtpSecure,
+      auth: { user: config.user, pass: config.pass },
+    });
+  } else {
+    // Default to Gmail service if no custom SMTP host specified
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: config.user, pass: config.pass },
+    });
+  }
+
   return { transporter, config };
 }
 
@@ -70,8 +100,8 @@ export async function sendOrderEmails(order: Order): Promise<void> {
     console.warn("[email] Mail not configured (Admin Portal > Settings) — skipping order emails.");
     return;
   }
-  const { gmailUser, adminNotifyEmail } = config;
-  const fromAddress = `KINDRED Boutique <${gmailUser}>`;
+  const { fromName, fromEmail, adminNotifyEmail } = config;
+  const fromAddress = `${fromName} <${fromEmail}>`;
 
   const summaryTable = `
     <table style="width:100%;border-collapse:collapse;font-size:14px;margin:16px 0;">
@@ -133,16 +163,16 @@ export async function sendOrderEmails(order: Order): Promise<void> {
 }
 
 // Used by the Admin Portal Settings page's "Send Test Email" button so the
-// admin can verify their Gmail credentials work before relying on them.
+// admin can verify their SMTP credentials work before relying on them.
 export async function sendTestEmail(): Promise<{ ok: boolean; error?: string }> {
   const { transporter, config } = await getTransporter();
   if (!transporter) {
     return { ok: false, error: "Mail is not configured yet. Fill in the fields above and save first." };
   }
-  const { gmailUser, adminNotifyEmail } = config;
+  const { fromName, fromEmail, adminNotifyEmail } = config;
   try {
     await transporter.sendMail({
-      from: `KINDRED Boutique <${gmailUser}>`,
+      from: `${fromName} <${fromEmail}>`,
       to: adminNotifyEmail,
       subject: "KINDRED — Test Email",
       html: wrapHtml(
@@ -156,3 +186,4 @@ export async function sendTestEmail(): Promise<{ ok: boolean; error?: string }> 
     return { ok: false, error: err?.message || "Failed to send test email." };
   }
 }
+

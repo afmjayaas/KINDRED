@@ -2,19 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSettings, saveSettings } from "@/lib/db";
 import { isAdminAuthenticated } from "@/lib/server-auth";
 
-// GET: returns current mail settings, but never sends the saved app password
-// back to the browser — only whether one is currently set.
+// GET: returns current mail settings, omitting sensitive passwords
 export async function GET() {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
   try {
     const settings = await getSettings();
+    const mail = settings.mail || {};
     return NextResponse.json({
       mail: {
-        gmailUser: settings.mail?.gmailUser || "",
-        adminNotifyEmail: settings.mail?.adminNotifyEmail || "",
-        hasAppPassword: !!settings.mail?.gmailAppPassword,
+        smtpHost: mail.smtpHost || "",
+        smtpPort: mail.smtpPort || 465,
+        smtpSecure: mail.smtpSecure !== undefined ? mail.smtpSecure : true,
+        fromName: mail.fromName || "KINDRED Boutique",
+        fromEmail: mail.fromEmail || mail.gmailUser || "",
+        gmailUser: mail.gmailUser || "",
+        adminNotifyEmail: mail.adminNotifyEmail || "",
+        hasAppPassword: !!mail.gmailAppPassword,
       },
     });
   } catch {
@@ -22,8 +27,7 @@ export async function GET() {
   }
 }
 
-// PUT: updates mail settings. Send gmailAppPassword only when the admin wants
-// to change it; omit/blank it to keep the previously saved password.
+// PUT: updates mail & SMTP settings
 export async function PUT(req: NextRequest) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
@@ -36,6 +40,11 @@ export async function PUT(req: NextRequest) {
     const updated = {
       ...settings,
       mail: {
+        smtpHost: typeof body.smtpHost === "string" ? body.smtpHost.trim() : settings.mail?.smtpHost || "",
+        smtpPort: typeof body.smtpPort === "number" ? body.smtpPort : parseInt(body.smtpPort || "465", 10),
+        smtpSecure: typeof body.smtpSecure === "boolean" ? body.smtpSecure : settings.mail?.smtpSecure !== false,
+        fromName: typeof body.fromName === "string" ? body.fromName.trim() : settings.mail?.fromName || "KINDRED Boutique",
+        fromEmail: typeof body.fromEmail === "string" ? body.fromEmail.trim() : settings.mail?.fromEmail || "",
         gmailUser: typeof body.gmailUser === "string" ? body.gmailUser.trim() : settings.mail?.gmailUser || "",
         adminNotifyEmail:
           typeof body.adminNotifyEmail === "string"
@@ -51,6 +60,11 @@ export async function PUT(req: NextRequest) {
     await saveSettings(updated);
     return NextResponse.json({
       mail: {
+        smtpHost: updated.mail.smtpHost,
+        smtpPort: updated.mail.smtpPort,
+        smtpSecure: updated.mail.smtpSecure,
+        fromName: updated.mail.fromName,
+        fromEmail: updated.mail.fromEmail,
         gmailUser: updated.mail.gmailUser,
         adminNotifyEmail: updated.mail.adminNotifyEmail,
         hasAppPassword: !!updated.mail.gmailAppPassword,
@@ -60,3 +74,4 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Failed to save settings." }, { status: 500 });
   }
 }
+

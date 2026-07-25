@@ -82,12 +82,39 @@ export interface Order {
 }
 
 export interface MailSettings {
-  gmailUser: string;
-  gmailAppPassword: string;
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpSecure?: boolean;
+  fromName?: string;
+  fromEmail?: string;
+  gmailUser?: string;
+  gmailAppPassword?: string;
   adminNotifyEmail: string;
+}
+
+export interface ComingSoonSettings {
+  enabled: boolean;
+  headline: string;
+  subtitle: string;
+  launchDate?: string;
+  bgImage?: string;
+  enableNewsletter: boolean;
+  socialLinks?: {
+    instagram?: string;
+    facebook?: string;
+    tiktok?: string;
+    whatsapp?: string;
+    pinterest?: string;
+  };
+  contactEmail?: string;
+  contactPhone?: string;
+  previewCode?: string;
 }
 
 export interface SiteSettings {
   adminUsernameHint?: string;
   mail?: MailSettings;
+  comingSoon?: ComingSoonSettings;
+  newsletterSubscribers?: string[];
 }
+

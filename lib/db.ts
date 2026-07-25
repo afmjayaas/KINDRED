@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { Redis } from "@upstash/redis";
-import { Product, JournalPost, Banner, Order, SiteSettings } from "./types";
+import { Product, JournalPost, Banner, Order, SiteSettings, ComingSoonSettings } from "./types";
+
 
 // ---------------------------------------------------------------------------
 // Storage layer.
@@ -150,9 +151,60 @@ export async function saveSettings(settings: SiteSettings): Promise<void> {
   await writeCollection("kindred:settings", "settings.json", settings);
 }
 
+// ---------- Coming Soon & Newsletter ----------
+export const DEFAULT_COMING_SOON: ComingSoonSettings = {
+  enabled: false,
+  headline: "KINDRED is Opening Soon",
+  subtitle: "We are putting the finishing touches on our exclusive fashion collection. Subscribe to receive an invitation to our grand launch.",
+  launchDate: "",
+  bgImage: "",
+  enableNewsletter: true,
+  socialLinks: {
+    instagram: "https://instagram.com",
+    facebook: "https://facebook.com",
+    whatsapp: "",
+    tiktok: "",
+    pinterest: "",
+  },
+  contactEmail: "contact@kindredboutique.com",
+  contactPhone: "",
+  previewCode: "kindred2026",
+};
+
+export async function getComingSoonSettings(): Promise<ComingSoonSettings> {
+  const settings = await getSettings();
+  return { ...DEFAULT_COMING_SOON, ...(settings.comingSoon || {}) };
+}
+
+export async function saveComingSoonSettings(comingSoon: ComingSoonSettings): Promise<void> {
+  const settings = await getSettings();
+  await saveSettings({ ...settings, comingSoon });
+}
+
+export async function addNewsletterSubscriber(email: string): Promise<{ success: boolean; message: string }> {
+  const normEmail = email.trim().toLowerCase();
+  if (!normEmail || !normEmail.includes("@")) {
+    return { success: false, message: "Please provide a valid email address." };
+  }
+  const settings = await getSettings();
+  const current = settings.newsletterSubscribers || [];
+  if (current.includes(normEmail)) {
+    return { success: true, message: "You are already subscribed!" };
+  }
+  const updated = [normEmail, ...current];
+  await saveSettings({ ...settings, newsletterSubscribers: updated });
+  return { success: true, message: "Thank you for subscribing! We'll notify you on launch." };
+}
+
+export async function getNewsletterSubscribers(): Promise<string[]> {
+  const settings = await getSettings();
+  return settings.newsletterSubscribers || [];
+}
+
 // Lets API routes report which storage backend is active (used by the
 // admin dashboard / settings page so the admin knows whether changes will
 // actually persist on the live site).
 export function isPersistentStorageConfigured(): boolean {
   return !!redis;
 }
+
