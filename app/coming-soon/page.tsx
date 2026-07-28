@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ComingSoonSettings } from "@/lib/types";
-import { Mail, Sparkles, Instagram, Facebook, Send, CheckCircle, Clock, ShieldCheck, Phone } from "lucide-react";
+import { Mail, Sparkles, Instagram, Facebook, Send, CheckCircle, Clock, Phone } from "lucide-react";
 
 export default function ComingSoonPage() {
   const [settings, setSettings] = useState<ComingSoonSettings | null>(null);
@@ -87,10 +87,10 @@ export default function ComingSoonPage() {
     }
   }
 
-  const headline = settings?.headline || "KINDRED is Opening Soon";
+  const headline = settings?.headline || "Opening Soon";
   const subtitle =
     settings?.subtitle ||
-    "We are putting the finishing touches on our exclusive women's fashion collection. Subscribe to receive an invitation to our grand launch.";
+    "We are putting the finishing touches on our exclusive fashion collection. Subscribe to receive an invitation to our grand launch.";
   const bgImage = settings?.bgImage;
 
   return (
@@ -104,37 +104,36 @@ export default function ComingSoonPage() {
       )}
 
       {/* Decorative Luxe Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] rounded-full bg-brand-gold/15 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-burgundy/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-gold/15 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[550px] h-[550px] rounded-full bg-brand-burgundy/10 blur-3xl pointer-events-none" />
 
-      {/* Top Header */}
-      <header className="relative z-10 container-luxe pt-8 pb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="font-serif text-2xl font-bold tracking-widest text-brand-burgundy">KINDRED</span>
-          <span className="text-[10px] tracking-widest uppercase font-semibold text-brand-gold bg-brand-burgundy px-2 py-0.5 rounded-full">
-            Boutique
+      {/* Top Header - No Admin Button as requested */}
+      <header className="relative z-10 container-luxe pt-8 pb-4 flex items-center justify-center">
+        <div className="text-center">
+          <span className="text-[11px] tracking-[0.35em] uppercase font-bold text-brand-gold bg-brand-burgundy px-3.5 py-1 rounded-full shadow-sm">
+            LUXURY FASHION BOUTIQUE
           </span>
         </div>
-
-        <a
-          href="/admin/login"
-          className="text-xs font-medium text-brand-brown/70 hover:text-brand-burgundy transition-colors flex items-center gap-1"
-        >
-          <ShieldCheck size={14} /> Admin Access
-        </a>
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 container-luxe py-12 flex-1 flex flex-col items-center justify-center text-center max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-burgundy/10 text-brand-burgundy text-xs font-semibold tracking-wider uppercase mb-6 border border-brand-burgundy/20">
-          <Sparkles size={14} /> Grand Opening Imminent
+      <main className="relative z-10 container-luxe py-8 flex-1 flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
+        {/* BIG PROMINENT BRAND LOGO & NAME */}
+        <div className="mb-8 flex flex-col items-center">
+          <h1 className="font-serif text-6xl sm:text-8xl md:text-9xl font-bold tracking-[0.25em] text-brand-burgundy uppercase drop-shadow-sm select-none">
+            KINDRED
+          </h1>
+          <div className="w-24 h-[2px] bg-brand-gold/60 my-3"></div>
+          <span className="text-xs sm:text-sm tracking-[0.4em] uppercase font-medium text-brand-brownDark/80">
+            BOUTIQUE & COUTURE
+          </span>
         </div>
 
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-brand-brownDark leading-tight mb-6">
-          {headline}
-        </h1>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-burgundy/10 text-brand-burgundy text-xs font-semibold tracking-wider uppercase mb-6 border border-brand-burgundy/20 shadow-sm">
+          <Sparkles size={14} /> {headline}
+        </div>
 
-        <p className="text-base sm:text-lg text-brand-brown/80 max-w-2xl leading-relaxed mb-10 font-normal">
+        <p className="text-base sm:text-xl text-brand-brown/80 max-w-2xl leading-relaxed mb-10 font-normal">
           {subtitle}
         </p>
 
@@ -164,12 +163,12 @@ export default function ComingSoonPage() {
 
         {/* VIP Newsletter Lead Capture Form */}
         {settings?.enableNewsletter !== false && (
-          <div className="w-full max-w-md bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-brand-brown/15 mb-10">
-            <h3 className="font-serif text-lg font-medium text-brand-brownDark mb-2 flex items-center justify-center gap-2">
-              <Mail size={18} className="text-brand-burgundy" /> Get Exclusive Access
+          <div className="w-full max-w-md bg-white/90 backdrop-blur-md p-6 sm:p-7 rounded-2xl shadow-xl border border-brand-brown/15 mb-10">
+            <h3 className="font-serif text-lg sm:text-xl font-medium text-brand-brownDark mb-2 flex items-center justify-center gap-2">
+              <Mail size={18} className="text-brand-burgundy" /> Get Exclusive Launch Invitation
             </h3>
             <p className="text-xs text-brand-brown/70 mb-4">
-              Be the first to know when our collection launches and receive a VIP opening discount.
+              Be the first to explore our seasonal collection when we launch.
             </p>
 
             {subscribedMessage ? (
@@ -216,7 +215,7 @@ export default function ComingSoonPage() {
               href={settings.socialLinks.instagram}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
             >
               <Instagram size={15} /> Instagram
             </a>
@@ -226,7 +225,7 @@ export default function ComingSoonPage() {
               href={settings.socialLinks.facebook}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
             >
               <Facebook size={15} /> Facebook
             </a>
@@ -236,7 +235,7 @@ export default function ComingSoonPage() {
               href={`https://wa.me/${settings.socialLinks.whatsapp.replace(/[^0-9]/g, "")}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
             >
               <Phone size={15} /> WhatsApp Inquiry
             </a>
@@ -244,7 +243,7 @@ export default function ComingSoonPage() {
           {settings?.contactEmail && (
             <a
               href={`mailto:${settings.contactEmail}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/70 border border-brand-brown/15 hover:bg-brand-burgundy hover:text-white transition-all shadow-sm"
             >
               <Mail size={15} /> {settings.contactEmail}
             </a>

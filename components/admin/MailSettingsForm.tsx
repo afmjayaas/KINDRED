@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Mail, Send, Server, CheckCircle, AlertCircle } from "lucide-react";
+import { Loader2, Mail, Send, Server, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
 
 interface InitialMailSettings {
   smtpHost?: string;
@@ -15,8 +15,15 @@ interface InitialMailSettings {
 }
 
 export default function MailSettingsForm({ initial }: { initial: InitialMailSettings }) {
-  const [useCustomSmtp, setUseCustomSmtp] = useState(!!initial.smtpHost);
-  const [smtpHost, setSmtpHost] = useState(initial.smtpHost || "");
+  const [providerPreset, setProviderPreset] = useState<"gmail" | "hostinger" | "custom">(
+    initial.smtpHost?.includes("hostinger")
+      ? "hostinger"
+      : initial.smtpHost
+      ? "custom"
+      : "gmail"
+  );
+
+  const [smtpHost, setSmtpHost] = useState(initial.smtpHost || "smtp.hostinger.com");
   const [smtpPort, setSmtpPort] = useState(initial.smtpPort || 465);
   const [smtpSecure, setSmtpSecure] = useState(initial.smtpSecure !== undefined ? initial.smtpSecure : true);
 
@@ -31,16 +38,35 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
   const [testing, setTesting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+  function applyPreset(preset: "gmail" | "hostinger" | "custom") {
+    setProviderPreset(preset);
+    setMessage(null);
+    if (preset === "hostinger") {
+      setSmtpHost("smtp.hostinger.com");
+      setSmtpPort(465);
+      setSmtpSecure(true);
+    } else if (preset === "gmail") {
+      setSmtpHost("smtp.gmail.com");
+      setSmtpPort(465);
+      setSmtpSecure(true);
+    } else {
+      if (smtpHost === "smtp.hostinger.com" || smtpHost === "smtp.gmail.com") {
+        setSmtpHost("mail.yourdomain.com");
+      }
+    }
+  }
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
     setSaving(true);
     try {
+      const activeHost = providerPreset === "gmail" ? "" : smtpHost;
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          smtpHost: useCustomSmtp ? smtpHost : "",
+          smtpHost: activeHost,
           smtpPort: Number(smtpPort),
           smtpSecure,
           fromName,
@@ -82,39 +108,48 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
 
   return (
     <form onSubmit={handleSave} className="card-luxe p-6 max-w-2xl space-y-6">
-      <div className="flex items-center justify-between border-b border-brand-brown/10 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-brand-brown/10 pb-4">
         <div className="flex items-center gap-2 text-brand-brownDark">
           <Mail size={22} className="text-brand-burgundy" />
           <div>
             <h2 className="font-serif text-xl font-medium">Email Server (SMTP Settings)</h2>
             <p className="text-xs text-brand-brown/70">
-              Configure order notifications, customer receipts, and store alerts.
+              Configure order notifications and customer receipt emails.
             </p>
           </div>
         </div>
 
-        {/* Server mode toggle button */}
+        {/* Server Provider Selector */}
         <div className="flex bg-brand-cream border border-brand-brown/15 rounded-lg p-1 text-xs font-medium">
           <button
             type="button"
-            onClick={() => {
-              setUseCustomSmtp(false);
-              setSmtpHost("");
-            }}
+            onClick={() => applyPreset("hostinger")}
             className={`px-3 py-1.5 rounded-md transition-all ${
-              !useCustomSmtp ? "bg-brand-burgundy text-white shadow-sm" : "text-brand-brownDark/70 hover:text-brand-brownDark"
+              providerPreset === "hostinger"
+                ? "bg-brand-burgundy text-white shadow-sm"
+                : "text-brand-brownDark/70 hover:text-brand-brownDark"
+            }`}
+          >
+            Hostinger SMTP
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset("gmail")}
+            className={`px-3 py-1.5 rounded-md transition-all ${
+              providerPreset === "gmail"
+                ? "bg-brand-burgundy text-white shadow-sm"
+                : "text-brand-brownDark/70 hover:text-brand-brownDark"
             }`}
           >
             Gmail App
           </button>
           <button
             type="button"
-            onClick={() => {
-              setUseCustomSmtp(true);
-              if (!smtpHost) setSmtpHost("mail.yourdomain.com");
-            }}
+            onClick={() => applyPreset("custom")}
             className={`px-3 py-1.5 rounded-md transition-all ${
-              useCustomSmtp ? "bg-brand-burgundy text-white shadow-sm" : "text-brand-brownDark/70 hover:text-brand-brownDark"
+              providerPreset === "custom"
+                ? "bg-brand-burgundy text-white shadow-sm"
+                : "text-brand-brownDark/70 hover:text-brand-brownDark"
             }`}
           >
             Custom SMTP
@@ -139,10 +174,36 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
         </div>
       )}
 
-      {useCustomSmtp ? (
+      {/* Preset Banner Info */}
+      {providerPreset === "hostinger" && (
+        <div className="bg-purple-50 border border-purple-200 text-purple-900 p-3.5 rounded-lg text-xs space-y-1">
+          <div className="font-semibold flex items-center gap-1.5 text-purple-950">
+            <Sparkles size={14} className="text-purple-600" /> Hostinger Webmail SMTP Preset Selected
+          </div>
+          <p className="opacity-90">
+            Default Host: <code>smtp.hostinger.com</code> | SSL Port: <code>465</code>. Use your full Hostinger email address as Username and your webmail password.
+          </p>
+        </div>
+      )}
+
+      {providerPreset === "gmail" && (
+        <p className="text-xs text-brand-brown/70 bg-brand-cream/60 p-3 rounded-lg border border-brand-brown/10">
+          Gmail Setup: Requires 2-Step Verification enabled on your Google Account and an App Password from{" "}
+          <a
+            href="https://myaccount.google.com/apppasswords"
+            target="_blank"
+            rel="noreferrer"
+            className="underline font-semibold text-brand-burgundy"
+          >
+            Google Account Security settings
+          </a>.
+        </p>
+      )}
+
+      {providerPreset !== "gmail" && (
         <div className="space-y-4 bg-brand-cream/50 p-4 rounded-lg border border-brand-brown/10">
           <div className="flex items-center gap-2 text-sm font-medium text-brand-brownDark">
-            <Server size={16} /> Custom SMTP Server Details
+            <Server size={16} /> SMTP Server Details
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -153,7 +214,7 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
               <input
                 className="input-luxe text-sm"
                 type="text"
-                placeholder="mail.yourdomain.com or smtp.sendgrid.net"
+                placeholder="smtp.hostinger.com or mail.yourdomain.com"
                 value={smtpHost}
                 onChange={(e) => setSmtpHost(e.target.value)}
               />
@@ -185,18 +246,6 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
             </label>
           </div>
         </div>
-      ) : (
-        <p className="text-xs text-brand-brown/70 bg-brand-cream/60 p-3 rounded-lg border border-brand-brown/10">
-          Gmail Setup: Requires 2-Step Verification enabled on your Google Account and an App Password from{" "}
-          <a
-            href="https://myaccount.google.com/apppasswords"
-            target="_blank"
-            rel="noreferrer"
-            className="underline font-semibold text-brand-burgundy"
-          >
-            Google Account Security settings
-          </a>.
-        </p>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -219,7 +268,7 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
           <input
             className="input-luxe text-sm"
             type="email"
-            placeholder="contact@kindredboutique.com"
+            placeholder="info@kindredgrp.com"
             value={fromEmail}
             onChange={(e) => setFromEmail(e.target.value)}
           />
@@ -234,7 +283,7 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
           <input
             className="input-luxe text-sm"
             type="text"
-            placeholder="your@email.com"
+            placeholder="info@kindredgrp.com"
             value={gmailUser}
             onChange={(e) => setGmailUser(e.target.value)}
           />
@@ -242,12 +291,12 @@ export default function MailSettingsForm({ initial }: { initial: InitialMailSett
 
         <div>
           <label className="block text-xs font-semibold text-brand-brownDark mb-1">
-            SMTP / App Password {hasAppPassword && <span className="text-green-700 font-normal">(saved)</span>}
+            SMTP Password {hasAppPassword && <span className="text-green-700 font-normal">(saved)</span>}
           </label>
           <input
             className="input-luxe text-sm"
             type="password"
-            placeholder={hasAppPassword ? "Leave blank to keep saved password" : "Enter password"}
+            placeholder={hasAppPassword ? "Leave blank to keep saved password" : "Enter email password"}
             value={gmailAppPassword}
             onChange={(e) => setGmailAppPassword(e.target.value)}
             autoComplete="new-password"
